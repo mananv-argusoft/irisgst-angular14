@@ -1,0 +1,12 @@
+.navbar {
+    border-bottom: 3px solid #f1f1f1;
+    height: 50px;
+}
+
+.marquee-news {
+    background-color: #f1f1f1;
+    color: #1c3c6d;
+    font-size: 17px;
+
+    width: 50%;
+}

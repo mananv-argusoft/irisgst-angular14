@@ -1,0 +1,20 @@
+.form-control {
+    margin-bottom: 15px;
+    box-shadow: none;
+    border-radius: 0;
+    height: 35px;
+}
+
+.submit-button {
+    margin: 0 auto;
+    display: block;
+    width: auto;
+
+    border: none;
+    border-radius: 0;
+    background-color: #F6762B;
+    padding: 5px 11px;
+}
+.submit-button:hover {
+    opacity: 0.7;
+}

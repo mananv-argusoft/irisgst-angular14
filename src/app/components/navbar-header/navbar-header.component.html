@@ -1,0 +1,23 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <img 
+            src="../../../assets/images/IRISGST-logo.png" 
+            alt="iris-gst logo"
+            style="height: 50px; width: auto; cursor: pointer;"
+            routerLink="/dashboard"
+        >
+
+        <div class="marquee-news">
+            <marquee *ngFor="let news of marqueeNews">{{ news.newsBody }}</marquee>
+        </div>
+
+        <ul class="list-group list-group-horizontal">
+            <li class="list-group-item">
+                <img src="../../../assets/images/nine-dots.svg" alt="options">
+            </li>
+            <li class="list-group-item">
+                <i class="fa fa-user"></i>
+            </li>
+        </ul>
+    </div>
+  </nav>

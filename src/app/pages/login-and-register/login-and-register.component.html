@@ -1,0 +1,33 @@
+<div class="background">
+    <div class="row card">
+        <div class="col-md-12">
+            <div class="logo">
+                <img
+                    src="../../../assets/images/IRISGST-logo.png"
+                    alt="iris-gst logo"
+                    style="height: 50px; width: auto;"
+                >
+            </div>
+    
+            <div class="row card-heading tab">
+                <a id="login-form-link" class="col-md-6 p-0">
+                    <div class="login-tab active" #loginTab (click)="toLogin()">
+                        <i class="fa fa-lock"></i>
+                        <span>SIGN IN</span>
+                    </div>
+                </a>
+                <a id="register-form-link" class="col-md-6 p-0">
+                    <div class="register-tab" #registerTab (click)="toRegister()">
+                        <i class="fa fa-pencil-square-o"></i>   
+                        <span>SIGN UP</span>
+                    </div>
+                </a>
+                
+            </div>
+            <hr class="colorgraph">
+            <div class="card-body px-0">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+    </div>
+</div>

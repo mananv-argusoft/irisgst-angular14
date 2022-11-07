@@ -1,0 +1,43 @@
+<form
+    #form="ngForm"
+    (ngSubmit)="onSubmit()"
+>
+    <div class="form-group">
+        <input
+            type="text"
+            class="form-control"
+            name="firstName"
+            id="first-name"
+            placeholder="First Name"
+            ngModel
+            required
+            #firstName="ngModel"    
+        >
+    </div>
+
+    <div class="form-group">
+        <input
+            type="email"
+            class="form-control"
+            name="email"
+            id="email"
+            placeholder="Email ID"
+            ngModel
+            required
+            email
+            #email="ngModel"
+        >
+        <span
+            class="help-block"
+            *ngIf="!email.valid && email.touched"
+        >Please enter a valid Email</span>
+    </div>
+
+    <div class="form-group">
+        <button
+            class="submit-button"
+            type="submit"
+            [disabled]="!form.valid"
+        >SIGN UP</button>
+    </div>
+</form>

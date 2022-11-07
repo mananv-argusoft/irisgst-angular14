@@ -1,0 +1,74 @@
+<div class="container-fluid py-1">
+    <div class="company-selector">
+        <div class="col-md-12">
+            <ul class="breadcrumb mb-0">
+                <li><i class="fa fa-building"></i></li>
+                <li>
+                    <div class="dropdown">
+                        <a data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-angle-double-right"></i>
+                        </a>
+                        <ul class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuLink">
+                            <li
+                                *ngFor="let business of businessEntityList"
+                                class="dropdown-item company-name"
+                                (click)="onChangeBusiness(business.companyid)"
+                            >
+                                <i class="fa fa-building"></i>
+                                {{ business.company }}
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+    
+                <ul class="breadcrumb" *ngFor="let selectedCompany of companyArray; let companyArrayIndex = index">
+                    <li *ngIf="selectedCompany">
+                        <span class="company-name" (click)="onChangeCompany(null, companyArrayIndex)">
+                            {{ selectedCompany['companyName'] }}
+                        </span>
+                    </li>
+                    <li *ngIf="selectedCompany && selectedCompany['childCompanies'].length">
+                        <div class="dropdown">
+                            <a data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-angle-double-right"></i>
+                            </a>
+                            <ul class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuLink">
+                                <li
+                                    *ngFor="let company of (selectedCompany['childCompanies'] | sortBy: 'companyName')"
+                                    class="dropdown-item company-name"
+                                    (click)="onChangeCompany(company, companyArrayIndex)"
+                                >
+                                    <i *ngIf="company.entityType==='LEGAL'" class="fa fa-tree"></i>
+                                    <i *ngIf="company.entityType==='FILING'" class="fa fa-leaf"></i>
+                                    {{ company['companyName'] }}
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+    
+                <li>
+                    <div class="ng-autocomplete">
+                        <ng-autocomplete
+                            #autocomplete
+                            [data]="allCompanies"
+                            searchKeyword="companyName"
+                            placeholder="Go To..."
+                            [itemTemplate]="itemTemplateStatic"
+                            [notFoundTemplate]="notFoundTemplate"
+                            (selected)="onCompanySelect($event)"
+                        ></ng-autocomplete>
+    
+                        <ng-template #itemTemplateStatic let-company>
+                            <a [innerHTML]="company.companyName"></a>
+                        </ng-template>
+    
+                        <ng-template #notFoundTemplate let-notFound>
+                            <div [innerHTML]="notFound"></div>
+                        </ng-template>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

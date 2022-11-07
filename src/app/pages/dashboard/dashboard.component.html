@@ -1,0 +1,63 @@
+<div class="dashboard">
+    <div class="page-title">
+        <section class="content-header">
+                <!-- <span class="page-title-text">DASHBOARD</span> -->
+            <ul class="breadcrumb">
+                <li>
+                    <label for="" class="control-label">
+                        <!-- <span>Data For: </span> -->
+                    </label>
+                    <div style="display: inline-block">
+                        <!-- <select name="" id="filing-period" class="form-control"></select> -->
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </div>
+
+    <div class="chart1-container">
+        <div class="title">
+            <span>OUTWARD TAXABLE SUPPLIES</span>
+        </div>
+        <hr class="m-0">
+        <span *ngIf="!outwardTaxableSupplies.length">No Data Found</span>
+        <canvas id="chart-1" *ngIf="outwardTaxableSupplies">{{ chart1 }}</canvas>
+    </div> 
+    
+    <div class="chart2-container">
+        <div class="title">
+            <span>GROSS TAX LIABILITY (EXCL. RCM LIABILITY)</span>
+        </div>
+        <hr class="m-0">
+        <span *ngIf="!grossTaxLiability.length">No Data Found</span>
+        <canvas id="chart-2" *ngIf="grossTaxLiability">{{ chart2 }}</canvas>
+    </div> 
+
+    <div class="chart3-container">
+    </div>
+
+    <div class="card news-container">
+        <div class="card-header">
+            <span class="card-title">Important News and Updates</span>
+        </div>
+        <div class="card-body">
+            <ul class="dashList dashul">
+                <!-- <li ng-if="showPasswordChangeMsg"><p><span class="blinkWarn"><i class="fa fa-exclamation-triangle"></i></span> Your password is going to expire soon. Change password from <a href="#/userProfile">My Account</a></p> </li> -->
+                <li *ngFor="let news of newsList">
+                        <span><i class="fa fa-angle-double-right"></i>
+                            {{news.newsHeader}}</span>
+                        <span class="blink" *ngIf="news.newsType == 'IMPORTANT'">New</span>                                      
+                        <p>
+                            <br>{{news.newsBody}}
+                        </p>
+                        <p *ngIf="news.moreInfoType == 'URL'" class="knowMoreLink">
+                            <a target="_blank" href="{{news.moreInfoExternalLink}}">know more...</a>
+                        </p>
+                        <p *ngIf="news.moreInfoType == 'MODAL'" class="knowMoreLink">
+                            <a ng-click="openModal(news.moreInfoModalHeader, news.moreInfoModalBody,news.moreInfoModalHeader)"  href="/#">know more...</a>
+                        </p>                                        
+                    </li>
+            </ul>        
+        </div>
+    </div>
+</div>
