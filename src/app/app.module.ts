@@ -13,13 +13,14 @@ import { CompanySelectorComponent } from './components/company-selector/company-
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
-import { SortByPipe } from './pipes/sort-by-order.pipe';
+import { SortByPipe } from './pipes/sort-by.pipe';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 import { NavbarHeaderComponent } from './components/navbar-header/navbar-header.component';
 import { MasterMenuComponent } from './components/master-menu/master-menu.component';
 import { PageTitleComponent } from './components/page-title/page-title.component';
+import { ToIndianCurrencyPipe } from './pipes/to-indian-currency.pipe';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { PageTitleComponent } from './components/page-title/page-title.component
     NavbarHeaderComponent,
     MasterMenuComponent,
     PageTitleComponent,
+    ToIndianCurrencyPipe,
   ],
   imports: [
     BrowserModule,

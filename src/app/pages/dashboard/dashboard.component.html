@@ -1,63 +1,146 @@
 <div class="dashboard">
-    <div class="page-title">
-        <section class="content-header">
-                <!-- <span class="page-title-text">DASHBOARD</span> -->
-            <ul class="breadcrumb">
-                <li>
-                    <label for="" class="control-label">
-                        <!-- <span>Data For: </span> -->
-                    </label>
-                    <div style="display: inline-block">
-                        <!-- <select name="" id="filing-period" class="form-control"></select> -->
+    <section class="dashboard-header page-title">
+        <span class="page-title-text">DASHBOARD</span>
+        <ul class="selector">
+            <li>
+                <label for="filingPeriod" class="control-label">
+                    <span>Data For: </span>
+                </label>
+                <div style="display: inline-block">
+                    <select
+                        #fpSelector
+                        name="filingPeriod"
+                        id="filing-period"
+                        class="form-control"
+                        (change)="onFilingPeriodChange(fpSelector.value)"
+                    >
+                        <option
+                            *ngFor="let fp of filingPeriod.slice().reverse()"
+                            [value]="fp"
+                        >
+                            {{ months[+(fp.substring(0, 2)) - 1].substring(0, 3) + '-' + fp.slice(-4) }}
+                        </option>
+                    </select>
+                </div>
+            </li>
+        </ul>
+    </section>
+
+    <div class="dashboard-content">
+        <div class="row">
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="info-box">
+                    <span class="info-box-icon bg-aqua"><i class="fa fa-bar-chart"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">NO. OF GSTINS</span>
+                        <span class="info-box-number" *ngIf="gstinCount">{{ gstinCount }}</span>
+                        <span class="info-box-number" *ngIf="!gstinCount">-</span>
                     </div>
-                </li>
-            </ul>
-        </section>
-    </div>
-
-    <div class="chart1-container">
-        <div class="title">
-            <span>OUTWARD TAXABLE SUPPLIES</span>
-        </div>
-        <hr class="m-0">
-        <span *ngIf="!outwardTaxableSupplies.length">No Data Found</span>
-        <canvas id="chart-1" *ngIf="outwardTaxableSupplies">{{ chart1 }}</canvas>
-    </div> 
-    
-    <div class="chart2-container">
-        <div class="title">
-            <span>GROSS TAX LIABILITY (EXCL. RCM LIABILITY)</span>
-        </div>
-        <hr class="m-0">
-        <span *ngIf="!grossTaxLiability.length">No Data Found</span>
-        <canvas id="chart-2" *ngIf="grossTaxLiability">{{ chart2 }}</canvas>
-    </div> 
-
-    <div class="chart3-container">
-    </div>
-
-    <div class="card news-container">
-        <div class="card-header">
-            <span class="card-title">Important News and Updates</span>
-        </div>
-        <div class="card-body">
-            <ul class="dashList dashul">
-                <!-- <li ng-if="showPasswordChangeMsg"><p><span class="blinkWarn"><i class="fa fa-exclamation-triangle"></i></span> Your password is going to expire soon. Change password from <a href="#/userProfile">My Account</a></p> </li> -->
-                <li *ngFor="let news of newsList">
-                        <span><i class="fa fa-angle-double-right"></i>
-                            {{news.newsHeader}}</span>
-                        <span class="blink" *ngIf="news.newsType == 'IMPORTANT'">New</span>                                      
-                        <p>
-                            <br>{{news.newsBody}}
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="info-box">
+                    <span class="info-box-icon bg-cinnabar"><i class="fa fa-files-o"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">OUTWARD SUPPLIES</span>
+                        <span class="info-box-number" *ngIf="outwardSupplies">{{ outwardSupplies | toIndianCurrency }}</span>
+                        <span class="info-box-number" *ngIf="!outwardSupplies">-</span>
+                        <p *ngIf="outwardSupplies" class="widget-data">
+                            Data for {{ months[+(selectedFilingPeriod?.substring(0, 2)) - 1].substring(0, 3) + ' ' + selectedFilingPeriod.slice(-4) }} - 
+                            <a>{{ outwardSuppliesGstinsForFp.length }} GSTINs</a>
                         </p>
-                        <p *ngIf="news.moreInfoType == 'URL'" class="knowMoreLink">
-                            <a target="_blank" href="{{news.moreInfoExternalLink}}">know more...</a>
+                        <!-- <p class="widgetData" *ngIf="temp.month_name && temp.year_no && temp.gstin_data_count > 0">Data for {{temp.month_name +' '+temp.year_no}} - <a class="pointericon" ng-click="showGstinNo()">{{temp.gstin_data_count}} GSTINs</a></p> -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="info-box">
+                    <span class="info-box-icon bg-lgreen"><i class="fa fa-sign-in"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">RCM INWARD SUPPLIES</span>
+                        <span class="info-box-number" *ngIf="rcmInwardSupplies">{{ rcmInwardSupplies | toIndianCurrency }}</span>
+                        <span class="info-box-number" *ngIf="!rcmInwardSupplies">-</span>
+                        <p *ngIf="rcmInwardSupplies" class="widget-data">
+                            Data for {{ months[+(selectedFilingPeriod?.substring(0, 2)) - 1].substring(0, 3) + ' ' + selectedFilingPeriod.slice(-4) }} - 
+                            <a>{{ quickStatsGstinsForFp.length }} GSTINs</a>
                         </p>
-                        <p *ngIf="news.moreInfoType == 'MODAL'" class="knowMoreLink">
-                            <a ng-click="openModal(news.moreInfoModalHeader, news.moreInfoModalBody,news.moreInfoModalHeader)"  href="/#">know more...</a>
-                        </p>                                        
-                    </li>
-            </ul>        
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12">
+                <div class="info-box">
+                    <span class="info-box-icon bg-orange"><i class="fa fa-file-text-o"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">RCM PAYMENTS</span>
+                        <span class="info-box-number" *ngIf="rcmPayments">{{ rcmPayments | toIndianCurrency }}</span>
+                        <span class="info-box-number" *ngIf="!rcmPayments">-</span>
+                        <p *ngIf="rcmInwardSupplies" class="widget-data">
+                            Data for {{ months[+(selectedFilingPeriod?.substring(0, 2)) - 1].substring(0, 3) + ' ' + selectedFilingPeriod.slice(-4) }} - 
+                            <a>{{ quickStatsGstinsForFp.length }} GSTINs</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 row graphs-container">
+                <div class="col-md-6 p-0 mb-2 chart1-container">
+                    <div class="title">
+                        <span>OUTWARD TAXABLE SUPPLIES</span>
+                    </div>
+                    <hr class="m-0">
+                    <span *ngIf="!outwardTaxableSupplies.length">No Data Found</span>
+                    <canvas id="chart-1" *ngIf="outwardTaxableSupplies" class="p-3">{{ chart1 }}</canvas>
+                </div>
+        
+                <div class="col-md-6 p-0 mb-2 chart2-container">
+                    <div class="title">
+                        <span>GROSS TAX LIABILITY (EXCL. RCM LIABILITY)</span>
+                    </div>
+                    <hr class="m-0">
+                    <span *ngIf="!grossTaxLiability.length">No Data Found</span>
+                    <canvas id="chart-2" *ngIf="grossTaxLiability" class="p-3">{{ chart2 }}</canvas>
+                </div>
+        
+                <div class="col-md-12 p-0 chart3-container">
+                    <div class="title">
+                        <span>SETTLEMENT OF TAX LIABILITIES</span>
+                    </div>
+                    <hr class="m-0">
+                    <span *ngIf="taxPayment === {}">No Data Found</span>
+                    <canvas id="chart-3" *ngIf="taxPayment !== {}" class="p-3">{{ chart3 }}</canvas>
+                </div>
+            </div>
+
+            <div class="col-md-4 box news-container px-0">
+                <div class="box-header title">
+                    <span class="">IMPORTANT NEWS AND UPDATES</span>
+                </div>
+                <hr class="m-0">
+                <div class="box-body">
+                    <ul class="dashList dashul" style="list-style: none;">
+                        <!-- <li ng-if="showPasswordChangeMsg"><p><span class="blinkWarn"><i class="fa fa-exclamation-triangle"></i></span> Your password is going to expire soon. Change password from <a href="#/userProfile">My Account</a></p> </li> -->
+                        <li *ngFor="let news of newsList; let i = index">
+                            <span style="font-weight: 600; color: '#1c3c6d'">
+                                <i class="fa fa-angle-double-right"></i>
+                                {{news.newsHeader}}
+                            </span>
+                            <span class="blink" *ngIf="news.newsType == 'IMPORTANT'">New</span>
+                            <p style="margin-right: 20px;">
+                                <br>{{news.newsBody}}
+                            </p>
+                            <p *ngIf="news.moreInfoType == 'URL'" class="knowMoreLink">
+                                <a target="_blank" href="{{ news.moreInfoExternalLink }}">know more...</a>
+                            </p>
+                            <hr *ngIf="i !== newsList.length-1" style="margin-right: 30px;">
+                            <!-- <p *ngIf="news.moreInfoType == 'MODAL'" class="knowMoreLink">
+                                <a (click)="openModal(news.moreInfoModalHeader, news.moreInfoModalBody,news.moreInfoModalHeader)"  href="/#">know more...</a>
+                            </p>                                         -->
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </div>

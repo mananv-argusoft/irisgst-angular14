@@ -11,6 +11,7 @@ import { BusinessService } from './business.service';
 export class DashboardService {
   public GET_OUTWARD_SUPPLY_AND_LIABILITY_URL = 'https://dev.asp.api.irisgst.com/capsule/dashboard/getOutwardSupplyAndLiability'
   public GET_QUICK_STATS_URL = 'https://dev.asp.api.irisgst.com/capsule/dashboard/getQuickStats'
+  public GET_TAX_PAYMENT_URL = 'https://dev.asp.api.irisgst.com/capsule/dashboard/getTaxPayment'
   public selectedCompany
 
   constructor(private http: HttpClient, private authService: AuthService) { }
@@ -44,7 +45,27 @@ export class DashboardService {
   }
 
   getQuickStats(company) {
-    return this.http.get(this.GET_OUTWARD_SUPPLY_AND_LIABILITY_URL, {
+    return this.http.get(this.GET_QUICK_STATS_URL, {
+      params: { 
+        'companyId': company.companyId,
+        userMailId: this.authService.user.email
+      },
+      headers: new HttpHeaders({
+        'X-Auth-Token':  this.authService.user.token,
+        'companyid': company.rootCompanyId
+      })
+    })
+      .pipe(
+        catchError(this.handleError),
+        tap(response => {
+          if (response['status'] !== 'SUCCESS')
+            throw new Error()
+        })
+      )
+  }
+
+  getTaxPayment(company) {
+    return this.http.get(this.GET_TAX_PAYMENT_URL, {
       params: { 
         'companyId': company.companyId,
         userMailId: this.authService.user.email

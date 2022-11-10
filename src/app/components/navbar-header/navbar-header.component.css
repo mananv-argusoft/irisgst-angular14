@@ -1,6 +1,7 @@
 .navbar {
     border-bottom: 3px solid #f1f1f1;
     height: 50px;
+    width: 100%;
 }
 
 .marquee-news {

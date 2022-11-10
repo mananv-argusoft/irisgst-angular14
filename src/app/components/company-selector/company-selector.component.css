@@ -1,3 +1,8 @@
+.company-selector {
+    width: 100%;
+    background-color: white;
+}
+
 .scrollable-menu {
     height: auto;
     max-height: 320px;
