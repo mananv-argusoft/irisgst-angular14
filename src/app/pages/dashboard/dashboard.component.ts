@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 import Chart from 'chart.js/auto';
 
@@ -12,25 +12,30 @@ import { NewsService } from 'src/app/services/news.service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  public selectedCompany: any
+  public selectedCompany: Object = {}
+  public selectedCompanyGstins: Object = {}
   
+  public selectedFilingPeriod: string
+
   public gstinCount: number = 0
+  public outwardSupplyAndLiability: Array<Object> = []
   public outwardSupplies: number = 0
-  public outwardSuppliesGstins: Array<Array<string>> = []
-  public outwardSuppliesGstinsForFp: Array<string> = []
+  public outwardSuppliesGstins: Array<Object> = []
   public quickStats: Array<Object> = []
-  public quickStatsGstins: Array<Array<string>> = []
-  public quickStatsGstinsForFp: Array<string> = []
+  public quickStatsGstins: Array<Object> = []
   public rcmInwardSupplies: number = 0
   public rcmPayments: number = 0
   
   public filingPeriod: Array<string> = []
-  public selectedFilingPeriod: string
+
+  @ViewChild('canvas1') canvas1: ElementRef;
   public outwardTaxableSupplies: Array<number> = []
   public chart1: any
+  @ViewChild('canvas2') canvas2: ElementRef;
   public grossTaxLiability: Array<number> = []
   public chart2: any
   public taxPayment: Object = {}
+  @ViewChild('canvas3') canvas3: ElementRef;
   public chart3: any
 
   public newsList: Array<any>
@@ -49,23 +54,28 @@ export class DashboardComponent implements OnInit {
       this.selectedCompany = company
 
       this.gstinCount = 0
+      this.selectedCompanyGstins = {}
+
       if (!this.selectedCompany['childCompanies'] || !this.selectedCompany['childCompanies'].length)
         this.countGstins([this.selectedCompany])
       else
         this.countGstins(this.selectedCompany['childCompanies'])
 
+      console.log(this.selectedCompanyGstins)
+      
+
       this.dashboardService.getOutWardSupplyAndLiability(this.selectedCompany)
         .subscribe({
           next: (response) => {
             console.log(response)
-
+            
             this.filingPeriod = []
             this.selectedFilingPeriod = ""
+            this.outwardSupplyAndLiability = []
             this.outwardTaxableSupplies = []
+            this.grossTaxLiability = []
             this.outwardSupplies = 0
             this.outwardSuppliesGstins = []
-            this.outwardSuppliesGstinsForFp = []
-            this.grossTaxLiability = []
             if (this.chart1)
               this.chart1.destroy()
             if (this.chart2)
@@ -73,30 +83,23 @@ export class DashboardComponent implements OnInit {
 
             if (response['response']) {
               const data = response['response']
-              data.slice(0).reverse().map(x => {
+
+              this.outwardSupplyAndLiability = data
+              data.map(x => {
                 this.filingPeriod.push(x.fp)
-
                 this.outwardTaxableSupplies.push(+x.outwardTaxSupply)
-                this.outwardSuppliesGstins.push(x['gstins'])
-
                 this.grossTaxLiability.push(+x.totTaxLiability)
+              })
 
-                // console.log('ots = ', this.outwardTaxableSupplies);
-                // console.log('gtl = ', this.grossTaxLiability);
+              this.selectedFilingPeriod = this.filingPeriod[0]
+
+              this.outwardSupplies = +this.outwardSupplyAndLiability[0]['outwardTaxSupply']
+
+              let gstins = this.outwardSupplyAndLiability[0]['gstins']
+              gstins.forEach(gstin => {
+                this.outwardSuppliesGstins.push(this.selectedCompanyGstins[gstin])
               })
               
-              this.outwardSupplies = this.outwardTaxableSupplies.slice(-1)[0]
-
-              console.log(this.filingPeriod)
-              
-
-              this.selectedFilingPeriod = this.filingPeriod.slice(-1)[0]
-              console.log('sfp = ', this.selectedFilingPeriod)
-              console.log(this.outwardSuppliesGstins);
-              
-              
-              this.outwardSuppliesGstinsForFp = this.outwardSuppliesGstins.slice(-1)[0]
-
               const outwardTaxableSuppliesMax = Math.max(...this.outwardTaxableSupplies)
               const grossTaxLiabilityMax = Math.max(...this.grossTaxLiability)
               let divisorFactor, yAxesScaleLabel
@@ -129,22 +132,20 @@ export class DashboardComponent implements OnInit {
             console.log(response)           
 
             this.quickStats = []
+            this.quickStatsGstins = []
             this.rcmInwardSupplies = 0
             this.rcmPayments = 0
-            this.quickStatsGstins = []
-            this.quickStatsGstinsForFp = []
 
             if (response['response']) {
               this.quickStats = response['response']
-              
-              this.quickStats.slice().reverse().map(x => {
-                this.quickStatsGstins.push(x['gstins'])
-              })
-
-              this.quickStatsGstinsForFp = this.quickStatsGstins.slice(-1)[0]
 
               this.rcmInwardSupplies = this.quickStats.slice()[0]['txvalTot']
               this.rcmPayments = this.quickStats.slice()[0]['pdCashTot']
+
+              let gstins = this.quickStats[0]['gstins']
+              gstins.forEach(gstin => {
+                this.quickStatsGstins.push(this.selectedCompanyGstins[gstin])
+              })
 
               // console.log(this.rcmInwardSupplies);
               // console.log(this.rcmPayments)
@@ -159,17 +160,13 @@ export class DashboardComponent implements OnInit {
       this.dashboardService.getTaxPayment(this.selectedCompany)
         .subscribe({
           next: (response) => {
+            this.taxPayment = {}
             if (this.chart3)
               this.chart3.destroy()
 
-            console.log(response)
-            
             if (response['response']) {
               console.log(response)
               
-              this.taxPayment = {}
-
-
               const data = response['response']
               const igstCash = [], igstItc = [], cgstCash = [],cgstItc = []
               const sgstCash = [], sgstItc = [], cessCash = [], cessItc = []
@@ -211,8 +208,10 @@ export class DashboardComponent implements OnInit {
 
   countGstins(companyArr) {
       companyArr.map(com => {
-        if (com.entityType==='FILING' && com.role!=='0')
+        if (com.entityType==='FILING' && com.role!=='0') {
           this.gstinCount++
+          this.selectedCompanyGstins[com['gstin']] = com
+        }
         else if (com.entityType === 'LEGAL')
           this.countGstins(com['childCompanies'])
       })
@@ -283,14 +282,17 @@ export class DashboardComponent implements OnInit {
   }
 
   createChart1(options){
-    this.chart1 = new Chart("chart-1", {  
+    const outwardTaxableSupplies = this.outwardTaxableSupplies.slice().reverse()
+    const filingPeriod = [...this.filingPeriod].reverse()
+
+    this.chart1 = new Chart('chart-1', {  
       type: 'line',
       data: {  // values on X-Axis
-        labels: this.filingPeriod,
+        labels: filingPeriod,
 	      datasets: [
           {
             label: 'Outward Taxable Supplies',
-            data: this.outwardTaxableSupplies,
+            data: outwardTaxableSupplies,
             tension: 0.4,
             borderColor: '#1C3C6D',
             fill: true,
@@ -306,14 +308,17 @@ export class DashboardComponent implements OnInit {
   }
 
   createChart2(options){
-    this.chart2 = new Chart("chart-2", {  
+    const grossTaxLiability = [...this.grossTaxLiability].reverse()
+    const filingPeriod = [...this.filingPeriod].reverse()
+
+    this.chart2 = new Chart('chart-2', {  
       type: 'line',
       data: {  // values on X-Axis
-        labels: this.filingPeriod,
+        labels: filingPeriod,
         datasets: [
           {
             label: 'Total Tax Liability',
-            data: this.grossTaxLiability,
+            data: grossTaxLiability,
             tension: 0.4,
             borderColor: '#f7d023',
             fill: true,
@@ -330,10 +335,12 @@ export class DashboardComponent implements OnInit {
   }
 
   createChart3() {
-    this.chart3 = new Chart("chart-3", {
+    const filingPeriod = [...this.filingPeriod].reverse()
+
+    this.chart3 = new Chart('chart-3', {
       type: 'bar',
       data: {
-        labels: this.filingPeriod,
+        labels: filingPeriod,
         datasets: [
           {
             label: 'IGST Cash',
@@ -460,20 +467,22 @@ export class DashboardComponent implements OnInit {
 
     this.selectedFilingPeriod = selectedFilingPeriod
 
-    this.outwardSuppliesGstinsForFp = []
-    this.quickStatsGstinsForFp = []
-    let index = this.filingPeriod.findIndex(fp => fp === selectedFilingPeriod)
-    console.log(index)
-    
-    this.outwardSuppliesGstinsForFp = this.outwardSuppliesGstins[index]
-    this.quickStatsGstinsForFp = this.quickStatsGstins[index]
+    let data = this.outwardSupplyAndLiability.find(x => x['fp'] === selectedFilingPeriod)
+    this.outwardSupplies = data['outwardTaxSupply']
+    this.outwardSuppliesGstins = []
+    let gstins = data['gstins']
+    gstins.forEach(gstin => {
+      this.outwardSuppliesGstins.push(this.selectedCompanyGstins[gstin])
+    })
 
-    index = this.filingPeriod.indexOf(selectedFilingPeriod)
-    this.outwardSupplies = this.outwardTaxableSupplies[index]
-
-    const quickStat = this.quickStats.find(qs => qs['fp'] === selectedFilingPeriod)
+    const quickStat = this.quickStats.find(x => x['fp'] === selectedFilingPeriod)
     this.rcmInwardSupplies = quickStat['txvalTot']
     this.rcmPayments = quickStat['pdCashTot']
+    this.quickStatsGstins = []
+    gstins = quickStat['gstins']
+    gstins.forEach(gstin => {
+      this.quickStatsGstins.push(this.selectedCompanyGstins[gstin])
+    })
   }
 
 }
