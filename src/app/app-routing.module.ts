@@ -6,6 +6,7 @@ import { RegisterComponent } from './components/register/register.component'
 import { DashboardComponent } from './pages/dashboard/dashboard.component'
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component'
 import { LoginAndRegisterComponent } from './pages/login-and-register/login-and-register.component'
+import { BulkDownloadComponent } from './pages/bulk-download/bulk-download.component'
 
 const routes: Routes = [
   { 
@@ -18,6 +19,7 @@ const routes: Routes = [
     ]
   },
   { path: 'dashboard', component: DashboardComponent },
+  { path: 'bulkDownload', component: BulkDownloadComponent },
   { path: 'forgotPassword', component: ForgotPasswordComponent }
 ]
 

@@ -23,6 +23,18 @@ export class CompanySelectorComponent implements OnInit {
         next: (responseData) => {
           // console.log('business entity list = ', responseData['response'])
           this.businessEntityList = responseData['response']
+
+          let companyId = '934'
+          this.businessService.changeBusiness(companyId)
+            .subscribe({
+              next: (responseData) => {
+                console.log('company change response = ', responseData)
+                this.getCompanyHierarchy(companyId)
+              },
+              error: (errorMessage) => {
+                console.log(errorMessage) 
+              }
+            })
         },
         error: (errorMessage) => {
           console.log(errorMessage)
@@ -56,6 +68,7 @@ export class CompanySelectorComponent implements OnInit {
           this.companyArray = []
           this.companyArray.push(response)
           this.companyHierarchy = response
+          this.businessService.selectedRootCompany.next(response)
 
           this.allCompanies = []
           this.storeAllCompanies(this.companyHierarchy)

@@ -9,6 +9,7 @@
                 <div style="display: inline-block">
                     <select
                         #fpSelector
+                        [(ngModel)]="selectedFilingPeriod"
                         name="filingPeriod"
                         id="filing-period"
                         class="form-control"
@@ -32,7 +33,7 @@
                 <div class="info-box">
                     <span class="info-box-icon bg-aqua"><i class="fa fa-bar-chart"></i></span>
                     <div class="info-box-content">
-                        <span class="info-box-text">NO. OF GSTINS</span>
+                        <span class="info-box-text">NO. OF GSTIN(S)</span>
                         <span class="info-box-number" *ngIf="gstinCount">{{ gstinCount }}</span>
                         <span class="info-box-number" *ngIf="!gstinCount">-</span>
                     </div>
@@ -47,7 +48,7 @@
                         <span class="info-box-number" *ngIf="!outwardSupplies">-</span>
                         <p *ngIf="outwardSupplies" class="widget-data">
                             Data for {{ months[+(selectedFilingPeriod?.substring(0, 2)) - 1].substring(0, 3) + ' ' + selectedFilingPeriod.slice(-4) }} - 
-                            <a>{{ outwardSuppliesGstins.length }} GSTINs</a>
+                            <a>{{ outwardSuppliesGstins.length }} GSTIN<span *ngIf="outwardSuppliesGstins.length > 1">s</span></a>
                         </p>
                         <!-- <p class="widgetData" *ngIf="temp.month_name && temp.year_no && temp.gstin_data_count > 0">Data for {{temp.month_name +' '+temp.year_no}} - <a class="pointericon" ng-click="showGstinNo()">{{temp.gstin_data_count}} GSTINs</a></p> -->
                     </div>
@@ -62,7 +63,7 @@
                         <span class="info-box-number" *ngIf="!rcmInwardSupplies">-</span>
                         <p *ngIf="rcmInwardSupplies" class="widget-data">
                             Data for {{ months[+(selectedFilingPeriod?.substring(0, 2)) - 1].substring(0, 3) + ' ' + selectedFilingPeriod.slice(-4) }} - 
-                            <a>{{ quickStatsGstins.length }} GSTINs</a>
+                            <a>{{ quickStatsGstins.length }} GSTIN<span *ngIf="quickStatsGstins.length > 1">s</span></a>
                         </p>
                     </div>
                 </div>
@@ -76,7 +77,7 @@
                         <span class="info-box-number" *ngIf="!rcmPayments">-</span>
                         <p *ngIf="rcmInwardSupplies" class="widget-data">
                             Data for {{ months[+(selectedFilingPeriod?.substring(0, 2)) - 1].substring(0, 3) + ' ' + selectedFilingPeriod.slice(-4) }} - 
-                            <a>{{ quickStatsGstins.length }} GSTINs</a>
+                            <a>{{ quickStatsGstins.length }} GSTIN<span *ngIf="quickStatsGstins.length > 1">s</span></a>
                         </p>
                     </div>
                 </div>
@@ -91,8 +92,8 @@
                     </div>
                     <hr class="m-0">
                     <span *ngIf="!outwardSupplyAndLiability.length">No Data Found</span>
-                    <div *ngIf="outwardSupplyAndLiability.length">
-                        <canvas #canvas1 id="chart-1" class="p-3">{{ chart1 }}</canvas>
+                    <div >
+                        <canvas #canvas1 id="chart-1" *ngIf="outwardSupplyAndLiability.length" class="p-3">{{ chart1 }}</canvas>
                     </div>
                 </div>
         
@@ -102,8 +103,8 @@
                     </div>
                     <hr class="m-0">
                     <span *ngIf="!outwardSupplyAndLiability.length">No Data Found</span>
-                    <div *ngIf="outwardSupplyAndLiability.length">
-                        <canvas #canvas2 id="chart-2" class="p-3">{{ chart2 }}</canvas>
+                    <div>
+                        <canvas #canvas2 id="chart-2" *ngIf="outwardSupplyAndLiability.length" class="p-3">{{ chart2 }}</canvas>
                     </div>
                 </div>
         
@@ -113,8 +114,8 @@
                     </div>
                     <hr class="m-0">
                     <span *ngIf="taxPayment === {}">No Data Found</span>
-                    <div *ngIf="taxPayment !== {}">
-                        <canvas #canvas3 id="chart-3" class="p-3">{{ chart3 }}</canvas>
+                    <div>
+                        <canvas #canvas3 id="chart-3" *ngIf="taxPayment !== {}" class="p-3">{{ chart3 }}</canvas>
                     </div>
                 </div>
             </div>

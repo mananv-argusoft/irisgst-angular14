@@ -9,9 +9,9 @@ import { BusinessService } from './business.service';
   providedIn: 'root'
 })
 export class DashboardService {
-  public GET_OUTWARD_SUPPLY_AND_LIABILITY_URL = 'https://dev.asp.api.irisgst.com/capsule/dashboard/getOutwardSupplyAndLiability'
-  public GET_QUICK_STATS_URL = 'https://dev.asp.api.irisgst.com/capsule/dashboard/getQuickStats'
-  public GET_TAX_PAYMENT_URL = 'https://dev.asp.api.irisgst.com/capsule/dashboard/getTaxPayment'
+  public OUTWARD_SUPPLY_AND_LIABILITY_URL = 'https://dev.asp.api.irisgst.com/capsule/dashboard/getOutwardSupplyAndLiability'
+  public QUICK_STATS_URL = 'https://dev.asp.api.irisgst.com/capsule/dashboard/getQuickStats'
+  public TAX_PAYMENT_URL = 'https://dev.asp.api.irisgst.com/capsule/dashboard/getTaxPayment'
   public selectedCompany
 
   constructor(private http: HttpClient, private authService: AuthService) { }
@@ -25,7 +25,7 @@ export class DashboardService {
   }
 
   getOutWardSupplyAndLiability(company) {
-    return this.http.get(this.GET_OUTWARD_SUPPLY_AND_LIABILITY_URL, {
+    return this.http.get(this.OUTWARD_SUPPLY_AND_LIABILITY_URL, {
       params: { 
         'companyId': company.companyId,
         userMailId: this.authService.user.email
@@ -45,7 +45,7 @@ export class DashboardService {
   }
 
   getQuickStats(company) {
-    return this.http.get(this.GET_QUICK_STATS_URL, {
+    return this.http.get(this.QUICK_STATS_URL, {
       params: { 
         'companyId': company.companyId,
         userMailId: this.authService.user.email
@@ -65,7 +65,7 @@ export class DashboardService {
   }
 
   getTaxPayment(company) {
-    return this.http.get(this.GET_TAX_PAYMENT_URL, {
+    return this.http.get(this.TAX_PAYMENT_URL, {
       params: { 
         'companyId': company.companyId,
         userMailId: this.authService.user.email

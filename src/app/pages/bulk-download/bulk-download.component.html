@@ -1,0 +1,456 @@
+<div class="page">
+    <section class="page-header page-title">
+        <span class="page-title-text">GST DATA</span>
+    </section>
+
+    <div class="page-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="" *ngIf="activeTab === 1">
+                        <div class="clearfix"></div>
+                        <div class="">
+                            <form autocomplete="off" name="bulkDownload" novalidate="">
+                                <div class="col-md-12 noPadding">
+                                    <div 
+                                        ngClass="returnType=='GSTR2A (Counterparty-wise)' ? 'col-md-2': 'col-md-3'"
+                                        *ngIf="selectedCompany!==null"
+                                    >
+                                        <label for="b_name" class="control-label">
+                                            GSTIN 
+                                            <span class="noteTextb">
+                                                (N: <i class="fa fa-thumbs-o-down labelNo" title="Session Not Valid"></i>)
+                                            </span>
+                                        </label>
+
+                                        <app-company-tree-selector (gstinChanged)="gstinChanged($event)"></app-company-tree-selector>
+
+                                        <!-- <hierarchy-search dataset="selectedCompany" list="list" ongstintreechange="ongstintreechange"
+                                        deselect-all="isDeselectFlag"></hierarchy-search> -->
+                                    </div>
+
+                                    <div ngClass="returnType==='GSTR2A (Counterparty-wise)' ? 'col-md-2': 'col-md-3'">
+                                        <div class="form-group">
+                                            <label for="b_name" class="control-label">Return Type</label>
+                                            <select
+                                                class="form-control height38px"
+                                                required 
+                                                (change)="returnTypeChanged($event)" 
+                                                style="width: 101%;"
+                                            >
+                                                <option selected disabled>Select</option>
+                                                <option 
+                                                    *ngFor="let rt of returnTypes"
+                                                >{{ rt['value'] }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!--Selected items: {{selectedItem2}}-->
+
+                                    <div 
+                                        ngClass="returnType==='GSTR2A (Counterparty-wise)' ? 'col-md-2': 'col-md-3'"
+                                        *ngIf="!isGSTR2B && !isGSTR9 && !isGSTR2 && !isITC04 && returnType!=='LEDGER BAL' && !isGSTREinvoice && returnType!=='GSTR9C'"
+                                    >
+                                        <label for="b_name" class="control-label">Return Period</label>
+                                        <!-- <multi-select-tree data-input-model="filingPeriodDates"
+                                            multi-select="true" required data-output-model="fp"
+                                            data-default-label="Select"
+                                            data-callback="selectOnly1Or2(item, selectedItems)"
+                                            selected-gstins="selectedFP"
+                                            data-select-only-leafs="false"
+                                            data-switch-view-callback="switchViewCallback(scopeObj)"
+                                            data-switch-view-label="test1" data-switch-view="true"
+                                            required></multi-select-tree> -->
+                                        <br />
+                                    </div>
+
+                                    <div 
+                                        ngClass="returnType==='GSTR2A (Counterparty-wise)' ? 'col-md-2': 'col-md-3'"
+                                        *ngIf="isGSTR2B && returnType!=='LEDGER BAL'"
+                                    >
+                                        <label for="b_name" class="control-label">Return Period</label>
+                                        <!-- <multi-select-tree data-input-model="filingPeriodDates2B"
+                                            multi-select="true" required data-output-model="fp"
+                                            data-default-label="Select"
+                                            data-callback="selectOnly1Or2(item, selectedItems)"
+                                            selected-gstins="selectedFP"
+                                            data-select-only-leafs="false"
+                                            data-switch-view-callback="switchViewCallback(scopeObj)"
+                                            data-switch-view-label="test1" data-switch-view="true"
+                                            required></multi-select-tree> -->
+                                        <br />
+                                    </div>
+
+                                    <div 
+                                        ngClass="returnType==='GSTR2A (Counterparty-wise)' ? 'col-md-2': 'col-md-3'"
+                                        *ngIf="isGSTREinvoice && returnType!=='LEDGER BAL'"
+                                    >
+                                        <label for="b_name" class="control-label">Return Period</label>
+                                        <!-- <multi-select-tree data-input-model="filingPeriodDatesEinvoice"
+                                            multi-select="true" required data-output-model="fp"
+                                            data-default-label="Select"
+                                            data-callback="selectOnly1Or2(item, selectedItems)"
+                                            selected-gstins="selectedFP"
+                                            data-select-only-leafs="false"
+                                            data-switch-view-callback="switchViewCallback(scopeObj)"
+                                            data-switch-view-label="test1" data-switch-view="true"
+                                            required></multi-select-tree> -->
+                                        <br />
+                                    </div>
+
+                                    <div 
+                                        ngClass="returnType==='GSTR2A (Counterparty-wise)' ? 'col-md-2': 'col-md-3'"
+                                        *ngIf="isGSTR9 && returnType!=='LEDGER BAL'"
+                                    >
+                                        <label for="b_name" class="control-label">Return Period</label>
+                                        <!-- <multi-select-tree data-input-model="filingPeriodDatesGSTR9"
+                                            multi-select="true" required data-output-model="fp9"
+                                            data-default-label="Select"
+                                            data-callback="selectOnly1Or2(item, selectedItems)"
+                                            selected-gstins="selectedFP9"
+                                            data-select-only-leafs="false"
+                                            data-switch-view-callback="switchViewCallback(scopeObj)"
+                                            data-switch-view-label="test1" data-switch-view="true"
+                                            required></multi-select-tree> -->
+                                        <br />
+                                    </div>
+
+                                    <div class="col-md-3" *ngIf="returnType==='GSTR9C'">
+                                        <label for="b_name" class="control-label">Return Period</label>
+                                        <!-- <multi-select-tree data-input-model="filingPeriodDatesGSTR9C"
+                                            multi-select="true" required data-output-model="fp9c"
+                                            data-default-label="Select"
+                                            data-callback="selectOnly1Or2(item, selectedItems)"
+                                            selected-gstins="selectedFP9C"
+                                            data-select-only-leafs="false"
+                                            data-switch-view-callback="switchViewCallback(scopeObj)"
+                                            data-switch-view-label="test1" data-switch-view="true"
+                                            required></multi-select-tree> -->
+                                        <br />
+                                    </div>
+
+                                    <div 
+                                        ngClass="returnType==='GSTR2A (Counterparty-wise)' ? 'col-md-2': 'col-md-3'"
+                                        *ngIf="isITC04 && returnType!=='LEDGER BAL'"
+                                    >
+                                        <label for="b_name" class="control-label">Return Period</label>
+                                        <!-- <multi-select-tree data-input-model="filingPeriodDatesItc04"
+                                            multi-select="true" required data-output-model="fpitc04"
+                                            data-default-label="Select"
+                                            data-callback="selectOnly1Or2(item, selectedItems)"
+                                            selected-gstins="selectedFPitc04"
+                                            data-select-only-leafs="false"
+                                            data-switch-view-callback="switchViewCallback(scopeObj)"
+                                            data-switch-view-label="test1" data-switch-view="true"
+                                            required></multi-select-tree> -->
+                                        <br />
+                                    </div>
+
+                                    <div 
+                                        ngClass="returnType==='GSTR2A (Counterparty-wise)' ? 'col-md-2': 'col-md-3'"
+                                        *ngIf="isGSTR2 && returnType!=='LEDGER BAL'"
+                                    >
+                                        <label for="b_name" class="control-label">Return
+                                            Period</label>
+                                        <!-- <multi-select-tree data-input-model="filingPeriodDatesGSTR2"
+                                            multi-select="true" required data-output-model="fp2"
+                                            data-default-label="Select"
+                                            data-callback="selectOnly1Or2(item, selectedItems)"
+                                            selected-gstins="selectedFP2"
+                                            data-select-only-leafs="false"
+                                            data-switch-view-callback="switchViewCallback(scopeObj)"
+                                            data-switch-view-label="test1" data-switch-view="true"
+                                            required></multi-select-tree> -->
+                                        <br />
+                                    </div>
+
+                                    <div ngClass="returnType==='GSTR2A (Counterparty-wise)' ? 'col-md-2': 'col-md-3'">
+                                        <label for="b_name" class="control-label">Section</label>
+                                        <!-- <multi-select-tree data-input-model="sectionTypes"
+                                            multi-select="true" required
+                                            data-output-model="sectionType"
+                                            data-default-label="Select"
+                                            data-callback="selectOnly1Or2(item, selectedItems)"
+                                            selected-gstins="selectedSection"
+                                            data-select-only-leafs="false"
+                                            data-switch-view-callback="switchViewCallback(scopeObj)"
+                                            data-switch-view-label="test1" data-switch-view="true"
+                                            required></multi-select-tree> -->
+                                        <br />
+                                    </div>
+                                    
+                                    <div 
+                                        *ngIf="isSelectedGstr2ACtin"
+                                        ngClass="returnType==='GSTR2A (Counterparty-wise)' ? 'col-md-2': 'col-md-3'"
+                                    >
+                                        <label for="c_party" class="control-label">Counterparty GSTIN</label>
+                                        <!-- <input 
+                                            placeholder="Enter Counterparty" 
+                                            type="text"
+                                            class="form-control height38px" 
+                                            maxlength="15"
+                                            name="ctin" 
+                                            ng-model="ctin"
+                                        > -->
+                                        <br />
+                                    </div>
+                                    <div *ngIf="isSelectedGstr2AIncrement" class="col-md-2">
+                                        <label for="fromDate" class="control-label">Select From Date</label>
+                                        <div class="input-group date">
+                                            <!-- <input 
+                                                type="text" 
+                                                class="form-control pull-right"
+                                                id="frmDateSpinel" 
+                                                name="fromDate"
+                                                ng-model="fromDateSpinel" 
+                                                readonly=""
+                                                style="width:100%"
+                                            > -->
+                                            <div class="input-group-addon" id="clickFrmDt">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="col-md-12">
+                                        <button type="button" class="btn btn-blue"
+                                        ng-disabled="rowList.length > 0"
+                                            (click)="validateRequest(bulkDownload)"><i
+                                                class="fa fa-plus"></i> Add</button>
+                                        <button type="button" class="btn btn-blue"
+                                            (click)="rowList = []"><i class="fa fa-minus"></i>
+                                            Remove All</button>
+                                    </div> -->
+                                </div>
+                            </form>
+                        </div>
+                        <!-- <div class="tab-content" *ngIf="rowList.length > 0">
+                            <div class="tab-pane fade in active" id="upload">
+                                <div class="col-md-12">
+                                    <div class="">
+                                        <div class="">
+                                            <div class="">
+                                                <div class="panelHead" style="float: right;"></div>
+                                                <div class="clearfix"></div>
+                                                <div class="uploadHis table-responsive">
+                                                    <table st-table="rowList"
+                                                        class="table tblGstr custab">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Sr No.</th>
+                                                                <th>Name</th>
+                                                                <th>GSTIN</th>
+                                                                <th *ngIf="returnType != 'LEDGER BAL'">Filing Period</th>
+                                                                <th>Return Type</th>
+                                                                <th>Section</th>
+                                                                <th *ngIf="checkCtinWise">
+                                                                    Counterparty</th>
+                                                                <th *ngIf="checkFromDateWise">From
+                                                                    Date</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr
+                                                                *ngFor="let obj of rowList; let i = index">
+                                                                <td>{{ i+ 1 }}</td>
+                                                                <td>{{ obj.companyName }}</td>
+                                                                <td>{{ obj.gstin }}</td>
+                                                                <td *ngIf="returnType != 'LEDGER BAL'">{{ obj.fp }}</td>
+                                                                <td>{{ obj.returnType }}</td>
+                                                                <td>{{ obj.section }}</td>
+                                                                <td *ngIf="checkCtinWise">
+                                                                    {{ obj.ctin != null ? obj.ctin : '-' }}
+                                                                </td>
+                                                                <td *ngIf="checkFromDateWise">
+                                                                    {{ obj.fromDate != null ? obj.fromDate : '-' }}
+                                                                </td>
+                                                                <td><a href='#'
+                                                                        (click)="deleteReq(obj)"
+                                                                        title="Delete"><i
+                                                                            class='fa fa-remove'></i></a>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-12 ">
+                                    <label class="col-md-8 mart10"><input type="checkbox"
+                                            ng-model="merge" class="mart10"> Merge data across
+                                        GSTINs and Filing Period</label>
+                                    <button class="btn btn-blue mart10 pull-right"
+                                        click-and-disable="checkValidateRequest()"
+                                        *ngIf="rowList.length > 0"><span class="btnText"><i
+                                                class="fa fa-download"></i> Get</span></button>
+                                   
+                                </div>
+                            </div>
+                        </div> -->
+
+                    </div>
+
+                    <div *ngIf="activeTab === 2">  
+                        <div class="tab-content">
+                            <div id="upload">
+                                <div class="col-md-12">
+                                    <div class="">
+                                        <div class="">
+                                            <div class="mart10 marB10">
+                                                <label class="radio-inline">
+                                                    <input 
+                                                        type="radio"
+                                                        (change)="viewTypeChanged()"
+                                                        name="viewType" 
+                                                        [value]="1"
+                                                        [(ngModel)]="viewType"
+                                                    >Only Me
+                                                </label>
+                                                <label class="radio-inline">
+                                                    <input 
+                                                        type="radio"
+                                                        (change)="viewTypeChanged()"
+                                                        name="viewType" 
+                                                        [value]="2"
+                                                        [(ngModel)]="viewType"
+                                                    >Others
+                                                </label>
+                                                <label class="radio-inline">
+                                                    <input 
+                                                        type="radio"
+                                                        (change)="viewTypeChanged()"
+                                                        name="viewType" 
+                                                        [value]="3"
+                                                        [(ngModel)]="viewType"
+                                                    >All
+                                                </label>
+
+                                                <!-- <a 
+                                                    *ngIf="activeTab === 2" 
+                                                    class="pull-right"
+                                                    (click)="tabChange(2)"
+                                                >
+                                                    <i class="fa fa-refresh"></i> Refresh
+                                                </a> -->
+                                                <p class="noteText marB10" style="position: unset;">
+                                                    <i class="fa fa-info-circle"></i> 
+                                                    Records in 'Request History' will only be available from 1st Nov 2019
+                                                </p>
+
+                                            </div>
+
+                                            <div class="clearfix"></div>
+
+                                            <div class="gstNoData" *ngIf="activeTab===2 && historyData.length===0">
+                                                <h4>No Data Found</h4>
+                                            </div>
+
+                                            <div class="uploadHis table-responsive" *ngIf="historyData.length > 0">
+                                                <table st-table="historyData"
+                                                    class="table tblGstr custab">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Sr No.</th>
+                                                            <th>Username</th>
+                                                            <th>Last Updated Date</th>
+                                                            <th>Return Type</th>
+                                                            <th>Status</th>
+                                                            <th>View Details</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let obj of historyData | paginate: { itemsPerPage: recordsPerPage, currentPage, totalItems: totalRecords }; let i = index">
+                                                            <td>{{i + 1}}</td>
+                                                            <td>{{obj['userName']}}</td>
+                                                            <td>{{obj['creationDate']}}</td>
+                                                            <td>{{obj['returnType']}}</td>
+                                                            <td><span
+                                                                    *ngIf="obj['hasError']!=true && obj['status'] != 'AWAITING_TOKEN_RESPONSE'">{{obj['status']}}</span>
+                                                                <span class="text-uppercase"
+                                                                    style="color: red"
+                                                                    *ngIf="obj['hasError']===true && obj['status'] === 'COMPLETE'">&nbsp;Processed
+                                                                    with error</span>
+                                                                <span class="text-uppercase"
+                                                                    *ngIf="obj['status'] === 'AWAITING_TOKEN_RESPONSE'">{{obj['status']}}</span>
+                                                            </td>
+                                                            <!-- <td class=""><a class="" href
+                                                                    (click)="getSubRequestData(obj)">Details</a>
+                                                            </td>
+                                                            <td>
+                                                                <a href='#'
+                                                                    *ngIf="obj['status'] === 'COMPLETE'"
+                                                                    (click)="download(obj)"
+                                                                    title="Download"><i
+                                                                        class='fa fa-download'></i>
+                                                                    Download</a>
+                                                            </td> -->
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 ">
+                                    <!-- <label class="col-md-offset-8" *ngIf="activeTab === 1">
+                                        <input type="checkbox" [(ngModel)]="merge">
+                                        Merge data across GSTINs and Filing Period
+                                    </label> -->
+
+                                    <!-- <button 
+                                        class="btn btn-blue pull-right mart10"
+                                        (click)="submitRequest()"
+                                        *ngIf="rowList.length > 0"
+                                    >
+                                        <span class="btnText">Submit</span>
+                                    </button> -->
+
+                                    <div class="pagination-div" *ngIf="activeTab === 2">
+                                        <ul class="pagination col-md-12">
+                                            <pagination-controls (pageChange)="pageChanged($event, recordsPerPage)"></pagination-controls>
+
+                                            <li class="pull-right pt12px">
+                                                Page Limit:
+                                                <div class="btn-group">
+                                                    <button 
+                                                        type="button" 
+                                                        ngClass="btn-pagination 'active': recordsPerPage===10"
+                                                        (click)="pageChanged(1, 10)"
+                                                    >10</button>
+                                                    <button 
+                                                        type="button" 
+                                                        ngClass="btn-pagination 'active': recordsPerPage===50"
+                                                        (click)="pageChanged(1, 50)"
+                                                    >50</button>
+                                                    <button 
+                                                        type="button" 
+                                                        ngClass="btn-pagination 'active': recordsPerPage===100"
+                                                        (click)="pageChanged(1, 100)"
+                                                    >100</button>
+                                                    <button 
+                                                        type="button" 
+                                                        ngClass="btn-pagination 'active': recordsPerPage===200"
+                                                        (click)="pageChanged(1, 200)"
+                                                    >200</button>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

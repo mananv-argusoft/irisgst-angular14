@@ -61,13 +61,13 @@ export class DashboardComponent implements OnInit {
       else
         this.countGstins(this.selectedCompany['childCompanies'])
 
-      console.log(this.selectedCompanyGstins)
+      // console.log(this.selectedCompanyGstins)
       
 
       this.dashboardService.getOutWardSupplyAndLiability(this.selectedCompany)
         .subscribe({
           next: (response) => {
-            console.log(response)
+            // console.log(response)
             
             this.filingPeriod = []
             this.selectedFilingPeriod = ""
@@ -129,7 +129,7 @@ export class DashboardComponent implements OnInit {
       this.dashboardService.getQuickStats(this.selectedCompany)
         .subscribe({
           next: (response) => {
-            console.log(response)           
+            // console.log(response)           
 
             this.quickStats = []
             this.quickStatsGstins = []
@@ -165,7 +165,7 @@ export class DashboardComponent implements OnInit {
               this.chart3.destroy()
 
             if (response['response']) {
-              console.log(response)
+              // console.log(response)
               
               const data = response['response']
               const igstCash = [], igstItc = [], cgstCash = [],cgstItc = []
@@ -189,7 +189,7 @@ export class DashboardComponent implements OnInit {
               this.taxPayment['cessCash'] = cessCash
               this.taxPayment['cessItc'] = cessItc
 
-              console.log(this.taxPayment);              
+              // console.log(this.taxPayment);              
 
               this.createChart3()
             }
@@ -285,7 +285,7 @@ export class DashboardComponent implements OnInit {
     const outwardTaxableSupplies = this.outwardTaxableSupplies.slice().reverse()
     const filingPeriod = [...this.filingPeriod].reverse()
 
-    this.chart1 = new Chart('chart-1', {  
+    this.chart1 = new Chart("chart-1", {  
       type: 'line',
       data: {  // values on X-Axis
         labels: filingPeriod,
@@ -311,7 +311,7 @@ export class DashboardComponent implements OnInit {
     const grossTaxLiability = [...this.grossTaxLiability].reverse()
     const filingPeriod = [...this.filingPeriod].reverse()
 
-    this.chart2 = new Chart('chart-2', {  
+    this.chart2 = new Chart("chart-2", {  
       type: 'line',
       data: {  // values on X-Axis
         labels: filingPeriod,
@@ -337,7 +337,7 @@ export class DashboardComponent implements OnInit {
   createChart3() {
     const filingPeriod = [...this.filingPeriod].reverse()
 
-    this.chart3 = new Chart('chart-3', {
+    this.chart3 = new Chart("chart-3", {
       type: 'bar',
       data: {
         labels: filingPeriod,
@@ -463,7 +463,7 @@ export class DashboardComponent implements OnInit {
   }
 
   onFilingPeriodChange(selectedFilingPeriod) {
-    console.log(selectedFilingPeriod)
+    // console.log(selectedFilingPeriod)
 
     this.selectedFilingPeriod = selectedFilingPeriod
 
